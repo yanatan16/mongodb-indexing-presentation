@@ -1,5 +1,7 @@
 # Much ado about Indexing
 
+This is a presentation about MongoDB Indexing. The basic content is found below. The [presentation](http://revealme.herokuapp.com/yanatan16/mongodb-indexing-presentation/master/presentation.html#/) is hosted in github but served via a [small app](https://github.com/yanatan16/revealme) I built.
+
 _by [Jon Eisen](http://joneisen.me)_
 
 ## Overview
