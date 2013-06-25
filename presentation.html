@@ -32,7 +32,11 @@ Indexes are awesome because:
 <section>
   <section data-markdown>
 <script type="text/template">
-# Basics
+# Preliminaries
+</script>
+</section>
+<section data-markdown>
+<script type="text/template">
 ## Commands
 
 ```javascript
@@ -60,6 +64,10 @@ db.collection.find(fields).hint(index_or_name);
 <section data-markdown>
 <script type="text/template">
 # Indexing Basics
+</script>
+</section>
+<section data-markdown>
+<script type="text/template">
 ## Equality queries
 
 ```javascript
@@ -104,6 +112,10 @@ db.subunits.find({ rkey: 40 }).hint('my_custom_name'); // indexed!
 <section data-markdown>
 <script type="text/template">
 # Complex Indexing
+</script>
+</section>
+<section data-markdown>
+<script type="text/template">
 ## Equality, Range, Sort
 
 ```javascript
@@ -205,6 +217,10 @@ db.collection.ensureIndex({ sessId: 1 }, { background: true });
 <section data-markdown>
 <script type="text/template">
 # Optimization
+</script>
+</section>
+<section data-markdown>
+<script type="text/template">
 ## Keeping Indexes in memory
 
 - Indexes are second to the [working set](http://docs.mongodb.org/manual/reference/glossary/#term-working-set) to be kept in memory
