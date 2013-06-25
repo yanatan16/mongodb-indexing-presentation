@@ -183,15 +183,21 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 
 - TTL a collection: Must be used on a date field.
 
-    db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
+```javascript
+db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
+```
 
 - Drop duplicate documents:
 
-    db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
+```javascript
+db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
+```
 
 - Do not kill your database:
 
-    db.collection.ensureIndex({ sessId: 1 }, { background: true });
+```javascript
+db.collection.ensureIndex({ sessId: 1 }, { background: true });
+```
 
 </script>
 </section>
@@ -201,7 +207,7 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 ## Keeping Indexes in memory
 
 - Indexes are second to the [working set](http://docs.mongodb.org/manual/reference/glossary/#term-working-set) to be kept in memory
-- "Working set" is basically the amount of data AND indexes that will be active/in use by your system.
+- _Working set_ is basically the amount of data AND indexes that will be active/in use by your system.
 - It is much much much much better to keep your indexes in memory.
 - It is not always necessary to keep _all_ of your index in memory, only the most used.
 
