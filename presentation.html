@@ -47,7 +47,6 @@ db.collection.find(fields).hint(index_or_name);
 </section>
 <section data-markdown>
 <script type="text/template">
-# Basics
 ## Points
 
 - `ensureIndex({_id: 1}, {unique: true})` is always (mostly) true
@@ -82,7 +81,6 @@ db.subunits.find({ id: 'ZMB' }).explain();
 </section>
 <section data-markdown>
 <script type="text/template">
-# Indexing Basics
 ## Multi-key queries
 
 ```javascript
@@ -126,7 +124,6 @@ db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name'
 </section>
 <section data-markdown>
 <script type="text/template">
-# Complex Indexing
 ## For reals this time
 
 Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
