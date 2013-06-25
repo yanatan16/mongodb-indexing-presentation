@@ -1,4 +1,7 @@
 <!--
+
+title: Much ado about indexing
+
 	A reveal.js-formatted presentation for MongoDB Indexing
 
 	By Jon Eisen
@@ -31,11 +34,13 @@ Indexes are awesome because:
 <script type="text/template">
 ## Basic Commands
 
-- `db.collection.ensureIndex(indexed_fields, [options]);`
-- `db.collection.getIndexes();`
-- `db.collection.dropIndex(indexed_fields);`
-- `db.collection.find(find_fields).explain();`
-- `db.collection.find(fields).hint(index_or_name);`
+```javascript
+db.collection.ensureIndex(indexed_fields, [options]);
+db.collection.getIndexes();
+db.collection.dropIndex(indexed_fields);
+db.collection.find(find_fields).explain();
+db.collection.find(fields).hint(index_or_name);
+```
 
 </script>
 </section>
@@ -159,7 +164,7 @@ _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
 Mostly useful as a shard key. Somewhat useful when querying for object equality:
 
-```
+```javascript
 db.collection.find({ myobject: { data: "data.data.data.....", other: [ 1, 2, 3, 4, 5, 6, 7 ] } });
 db.collection.ensureIndex({ myobject: 'hashed' });
 ```
@@ -173,9 +178,17 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 <script type="text/template">
 ## Other Indexing Options
 
-- TTL a collection: Must be used on a date field.`db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });`
-- Drop duplicate documents: `db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });`
-- Do not kill your database: `db.collection.ensureIndex({ sessId: 1 }, { background: true });`
+- TTL a collection: Must be used on a date field.
+
+    db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
+
+- Drop duplicate documents:
+
+    db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
+
+- Do not kill your database:
+
+    db.collection.ensureIndex({ sessId: 1 }, { background: true });
 
 </script>
 </section>
@@ -197,7 +210,7 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 
 - [Profiling](http://docs.mongodb.org/manual/reference/command/profile/): `db.runCommand({ profile: 1 });`
 - Log files - mongoDB will log all long queries (set by `slowms` parameter in profiler)
-    - Remember slow queries may not be badly indexed, but instead held up by locks
+- Remember slow queries may not be badly indexed, but instead held up by locks
 - [dex](https://github.com/mongolab/dex) - The mongoDB indexing tool: `dex -f my/mongodb.log -n "mydb.mycoll" mongodb://myHost:12345/mydb`
 
 </script>
@@ -234,6 +247,10 @@ I'm Jon Eisen.
 [twitter://@jm_eisen](http://twitter.com/jm_eisen)
 
 [git://github.com/yanatan16](http://github.com/yanatan16)
+
+Presentation: [https://github.com/yanatan16/mongodb-indexing-presentation](https://github.com/yanatan16/mongodb-indexing-presentation)
+
+Hosted via [revealme](https://github.com/yanatan16/revealme) using [reveal.js](http://lab.hakim.se/reveal-js/).
 
 </script>
 </section>

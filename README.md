@@ -109,7 +109,7 @@ _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
 Mostly useful as a shard key. Somewhat useful when querying for object equality:
 
-```
+```javascript
 db.collection.find({ myobject: { data: "data.data.data.....", other: [ 1, 2, 3, 4, 5, 6, 7 ] } });
 db.collection.ensureIndex({ myobject: 'hashed' });
 ```
@@ -118,14 +118,22 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 
 ## Other Indexing Options
 
-- TTL a collection: Must be used on a date field.`db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });`
-- Drop duplicate documents: `db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });`
-- Don't kill your database: `db.collection.ensureIndex({ sessId: 1 }, { background: true });`
+- TTL a collection: Must be used on a date field.
+
+    db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
+
+- Drop duplicate documents:
+
+    db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
+
+- Don't kill your database:
+
+    db.collection.ensureIndex({ sessId: 1 }, { background: true });
 
 ## Keeping Indexes in memory
 
 - Indexes are second to the [working set](http://docs.mongodb.org/manual/reference/glossary/#term-working-set) to be kept in memory
-    - "Working set" is basically the amount of data AND indexes that will be active/in use by your system.
+- "Working set" is basically the amount of data AND indexes that will be active/in use by your system.
 - It is much much much much better to keep your indexes in memory.
 - It is not always necessary to keep _all_ of your index in memory, only the most used.
 
@@ -161,3 +169,6 @@ I'm Jon Eisen.
 
 [git://github.com/yanatan16](http://github.com/yanatan16)
 
+Presentation: [https://github.com/yanatan16/mongodb-indexing-presentation](https://github.com/yanatan16/mongodb-indexing-presentation)
+
+Hosted via [revealme](https://github.com/yanatan16/revealme) using [reveal.js](http://lab.hakim.se/reveal-js/).
