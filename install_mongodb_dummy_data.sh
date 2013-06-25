@@ -1,0 +1,1 @@
+tar xzvf demo.tgz && mongorestore
