@@ -10,9 +10,9 @@ title: Much ado about indexing
 
 <section data-markdown>
 <script type="text/template">
-  # Much ado about Indexing
+# Much ado about Indexing
 
-  _by [Jon Eisen](http://joneisen.me)_
+_by [Jon Eisen](http://joneisen.me)_
 
 </script>
 </section>
@@ -32,7 +32,8 @@ Indexes are awesome because:
 <section>
   <section data-markdown>
 <script type="text/template">
-## Basic Commands
+# Basics
+## Commands
 
 ```javascript
 db.collection.ensureIndex(indexed_fields, [options]);
@@ -46,7 +47,8 @@ db.collection.find(fields).hint(index_or_name);
 </section>
 <section data-markdown>
 <script type="text/template">
-## Basics on indexes
+# Basics
+## Points
 
 - `ensureIndex({_id: 1}, {unique: true})` is always (mostly) true
 - A query can only use one index (exception: $or queries)
@@ -58,7 +60,8 @@ db.collection.find(fields).hint(index_or_name);
 <section>
 <section data-markdown>
 <script type="text/template">
-## Indexing basic queries - equality
+# Indexing Basics
+## Equality queries
 
 ```javascript
 db.subunits.find({ id: 'ZMB' }).explain();
@@ -79,7 +82,8 @@ db.subunits.find({ id: 'ZMB' }).explain();
 </section>
 <section data-markdown>
 <script type="text/template">
-## Indexing basic queries - multi-key
+# Indexing Basics
+## Multi-key queries
 
 ```javascript
 db.subunits.find({ type: 'Polygon', rkey: 40 });
@@ -101,7 +105,8 @@ db.subunits.find({ rkey: 40 }).hint('my_custom_name'); // indexed!
 <section>
 <section data-markdown>
 <script type="text/template">
-## Indexing a complex query - equality, range, sort
+# Complex Indexing
+## Equality, Range, Sort
 
 ```javascript
 db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name': -1 }).explain();
@@ -121,7 +126,8 @@ db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name'
 </section>
 <section data-markdown>
 <script type="text/template">
-## Really indexing a complex query
+# Complex Indexing
+## For reals this time
 
 Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
 
