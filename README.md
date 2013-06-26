@@ -107,8 +107,13 @@ That index is not _optimal_.
 
 > Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
 
-    > db.subunits.ensureIndex({ type: 1, 'properties.name': -1, rkey: 1}); // the Correct index
-    > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name': -1 }).explain();
+    > db.subunits.ensureIndex({
+        type: 1,
+        'properties.name': -1,
+        rkey: 1
+      }); // the Correct index
+    > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }})
+        .sort({ 'properties.name': -1 }).explain();
     {
       "cursor" : "BtreeCursor type_1_rkey_1", // what happened?
       "scanAndOrder" : true, // still in-memory sorting
