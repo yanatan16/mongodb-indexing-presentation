@@ -1,11 +1,12 @@
 <!--
 
-title: Much ado about indexing
-
-  A reveal.js-formatted presentation for MongoDB Indexing
+  A revealme-formatted presentation for MongoDB Indexing
 
   By Jon Eisen
   Given June 24 2013
+
+title: Much ado about indexing
+theme: sky
 -->
 
 # Much ado about Indexing
