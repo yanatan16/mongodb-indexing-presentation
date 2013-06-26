@@ -27,13 +27,11 @@ Indexes are awesome because:
 
 ## Commands
 
-```
-> db.collection.ensureIndex(indexed_fields, [options]);
-> db.collection.getIndexes();
-> db.collection.dropIndex(indexed_fields);
-> db.collection.find(find_fields).explain();
-> db.collection.find(fields).hint(index_or_name);
-```
+    > db.collection.ensureIndex(indexed_fields, [options]);
+    > db.collection.getIndexes();
+    > db.collection.dropIndex(indexed_fields);
+    > db.collection.find(find_fields).explain();
+    > db.collection.find(fields).hint(index_or_name);
 
 ## Points
 
