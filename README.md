@@ -27,7 +27,7 @@ Indexes are awesome because:
 
 ## Commands
 
-```javascript
+```
 > db.collection.ensureIndex(indexed_fields, [options]);
 > db.collection.getIndexes();
 > db.collection.dropIndex(indexed_fields);
@@ -50,7 +50,7 @@ Indexes are awesome because:
 
 ## Equality queries
 
-```javascript
+```
 > db.subunits.find({ id: 'ZMB' }).explain();
 {
   "cursor" : "BasicCursor", // no index!
@@ -68,7 +68,7 @@ Indexes are awesome because:
 
 ## Multi-key queries
 
-```javascript
+```
 > db.subunits.find({ type: 'Polygon', rkey: 40 });
 > db.subunits.ensureIndex({ type: 1, rkey: 1 },
   { name: 'my_custom_name' });
@@ -88,7 +88,7 @@ Indexes are awesome because:
 
 ## Equality, Range, Sort
 
-```javascript
+```
 > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }})
   .sort({ 'properties.name': -1 }).explain();
 {
@@ -110,7 +110,7 @@ That index is not _optimal_.
 
 > Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
 
-```javascript
+```
 > db.subunits.ensureIndex({ type: 1, 'properties.name': -1, rkey: 1}); // the Correct index
 > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name': -1 }).explain();
 {
@@ -137,7 +137,7 @@ That index is not _optimal_.
 - Like regular secondary indexes, but they do not include references to documents without that field.
 - Use with `{ unique: true }` to force uniqueness on only non-null values.
 
-```javascript
+```
 > db.places.ensureIndex({ rkey: 1 }, { sparse: true });
 > db.places.find({ 'coordinates.0': { $lt: 500 } })
   .count()
@@ -153,7 +153,7 @@ _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
 Mostly useful as a shard key. Somewhat useful when querying for object equality:
 
-```javascript
+```
 > db.collection.find({ myobject: { data: "data.data.data.....", other: [ 1, 2, 3, 4, 5, 6, 7 ] } });
 > db.collection.ensureIndex({ myobject: 'hashed' });
 ```
@@ -166,19 +166,19 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 
 - TTL a collection: Must be used on a date field.
 
-```javascript
+```
 > db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
 ```
 
 - Drop duplicate documents:
 
-```javascript
+```
 > db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
 ```
 
 - Do not kill your database:
 
-```javascript
+```
 > db.collection.ensureIndex({ sessId: 1 }, { background: true });
 ```
 
