@@ -38,11 +38,15 @@ Indexes are awesome because:
 - `ensureIndex({_id: 1}, {unique: true})` is always (mostly) true
 - A query can only use one index (exception: $or queries)
 - Order of keys matters for range and sort queries.
+- `.explain()` not only gives information about the query, but also runs the query _optimizer_.
 
+## B-Trees
 
-## BTrees
+All indexes in Mongo are B-Trees. Understanding them will help you understand indexing.
 
+> The B-tree is a generalization of a binary search tree in that a node can have more than two children.
 
+See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree).
 
 # Indexing Basics
 
@@ -110,9 +114,8 @@ That index is not _optimal_.
       "scanAndOrder" : true, // still in-memory sorting
     }
 
-- Every time we use `.explain()`, the _query optimizer_ finds the best (fastest) index for that query.
-- There is a trade-off of index lookup speed versus in-memory sort speed.
-- In this case lookup speed won, but not always. Use `.hint(index_keys).explain()` to compare.
+> There is a tradeoff between walking the BTree and sorting in memory.
+> The query optimizer does not always get it right. Compare them yourself with `.hint()`
 
 # Index Options
 
@@ -147,7 +150,22 @@ Mostly useful as a shard key. Somewhat useful when querying for object equality:
 
 mongo will now hash the object instead of comparing based on the object. _Note_ does not support range or sort queries.
 
-## Geo Indexes
+## Geospatial Indexes
+
+Can either do "flat" (Euclidean plane) or "sphere" (Earthlike)
+
+    db.places.ensureIndex( { "locs": "2dsphere" } );
+    db.points.on.a.plane.ensureIndex { "locs": "2d" } );
+
+Allows fast use of geospatial queries:
+
+- `$geoWithin`
+- `$geoIntersects`
+- `$near`
+
+_Note: Geospatial indexes cannot be used as shard key.
+
+[Mongo docs](http://docs.mongodb.org/manual/core/geospatial-indexes/)
 
 ## Other Indexing Options
 
@@ -169,6 +187,8 @@ Optimize:
 
 - `update`'s first because of the db-level lock.
 - `find`'s second to minimize working set churn.
+
+> When comparing indexing performance, emulate your app; don't just run the same query 100 times.
 
 ## Keeping Indexes in memory
 
