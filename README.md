@@ -48,35 +48,32 @@ Indexes are awesome because:
 
 ## Equality queries
 
-```
-> db.subunits.find({ id: 'ZMB' }).explain();
-{
-  "cursor" : "BasicCursor", // no index!
-  "n" : 1,
-  "nscanned" : 170, // Searched 170 objects to find 1
-}
-> db.subunits.ensureIndex({ id: 1 }, { unique: true });
-> db.subunits.find({ id: 'ZMB' }).explain();
-{
-  "cursor" : "BtreeCursor id_1", // yay index worked!
-  "n" : 1,
-  "nscanned" : 1,
-}
-```
+
+    > db.subunits.find({ id: 'ZMB' }).explain();
+    {
+      "cursor" : "BasicCursor", // no index!
+      "n" : 1,
+      "nscanned" : 170, // Searched 170 objects to find 1
+    }
+    > db.subunits.ensureIndex({ id: 1 }, { unique: true });
+    > db.subunits.find({ id: 'ZMB' }).explain();
+    {
+      "cursor" : "BtreeCursor id_1", // yay index worked!
+      "n" : 1,
+      "nscanned" : 1,
+    }
 
 ## Multi-key queries
 
-```
-> db.subunits.find({ type: 'Polygon', rkey: 40 });
-> db.subunits.ensureIndex({ type: 1, rkey: 1 },
-  { name: 'my_custom_name' });
+    > db.subunits.find({ type: 'Polygon', rkey: 40 });
+    > db.subunits.ensureIndex({ type: 1, rkey: 1 },
+      { name: 'my_custom_name' });
 
-// Works with a prefix subset
-> db.subunits.find({ type:'Polygon' }) // indexed
+    // Works with a prefix subset
+    > db.subunits.find({ type:'Polygon' }) // indexed
 
-> db.subunits.find({ rkey: 40 }) // not-indexed!
-> db.subunits.find({ rkey: 40 }).hint('my_custom_name'); // indexed!
-```
+    > db.subunits.find({ rkey: 40 }) // not-indexed!
+    > db.subunits.find({ rkey: 40 }).hint('my_custom_name'); // indexed!
 
 - Prefix indexes are optimal secondary indexes.
 - Subset (non-prefix) are non-optimalsecondary indexes that must be hinted.
@@ -86,21 +83,19 @@ Indexes are awesome because:
 
 ## Equality, Range, Sort
 
-```
-> db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }})
-  .sort({ 'properties.name': -1 }).explain();
-{
-  "cursor" : "BtreeCursor type_1_rkey_1", // used the previous index
-  "scanAndOrder" : true, // OH NO! in-memory sort!
-}
-> db.subunits.ensureIndex({ type: 1, rkey: 1, 'properties.name': -1 }); // conjectured index...
-> db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }})
-  .sort({ 'properties.name': -1 }).explain();
-{
-  "cursor" : "BtreeCursor type_1_rkey_1", // wait what? why didn't it use our index?
-  "scanAndOrder" : true, // still in-memory sorting
-}
-```
+    > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }})
+      .sort({ 'properties.name': -1 }).explain();
+    {
+      "cursor" : "BtreeCursor type_1_rkey_1", // used the previous index
+      "scanAndOrder" : true, // OH NO! in-memory sort!
+    }
+    > db.subunits.ensureIndex({ type: 1, rkey: 1, 'properties.name': -1 }); // conjectured index...
+    > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }})
+      .sort({ 'properties.name': -1 }).explain();
+    {
+      "cursor" : "BtreeCursor type_1_rkey_1", // wait what? why didn't it use our index?
+      "scanAndOrder" : true, // still in-memory sorting
+    }
 
 That index is not _optimal_.
 
@@ -108,14 +103,12 @@ That index is not _optimal_.
 
 > Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
 
-```
-> db.subunits.ensureIndex({ type: 1, 'properties.name': -1, rkey: 1}); // the Correct index
-> db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name': -1 }).explain();
-{
-  "cursor" : "BtreeCursor type_1_rkey_1", // what happened?
-  "scanAndOrder" : true, // still in-memory sorting
-}
-```
+    > db.subunits.ensureIndex({ type: 1, 'properties.name': -1, rkey: 1}); // the Correct index
+    > db.subunits.find({ type: 'Polygon', rkey: { $gt: 40 }}).sort({ 'properties.name': -1 }).explain();
+    {
+      "cursor" : "BtreeCursor type_1_rkey_1", // what happened?
+      "scanAndOrder" : true, // still in-memory sorting
+    }
 
 - Every time we use `.explain()`, the _query optimizer_ finds the best (fastest) index for that query.
 - There is a trade-off of index lookup speed versus in-memory sort speed.
@@ -135,15 +128,13 @@ That index is not _optimal_.
 - Like regular secondary indexes, but they do not include references to documents without that field.
 - Use with `{ unique: true }` to force uniqueness on only non-null values.
 
-```
-> db.places.ensureIndex({ rkey: 1 }, { sparse: true });
-> db.places.find({ 'coordinates.0': { $lt: 500 } })
-  .count()
-2
-> db.places.find({ 'coordinates.0': { $lt: 500 } })
-  .sort({rkey: 1}).count() // == 1
-1
-```
+    > db.places.ensureIndex({ rkey: 1 }, { sparse: true });
+    > db.places.find({ 'coordinates.0': { $lt: 500 } })
+      .count()
+    2
+    > db.places.find({ 'coordinates.0': { $lt: 500 } })
+      .sort({rkey: 1}).count() // == 1
+    1
 
 _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
@@ -151,10 +142,8 @@ _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
 Mostly useful as a shard key. Somewhat useful when querying for object equality:
 
-```
-> db.collection.find({ myobject: { data: "data.data.data.....", other: [ 1, 2, 3, 4, 5, 6, 7 ] } });
-> db.collection.ensureIndex({ myobject: 'hashed' });
-```
+    > db.collection.find({ myobject: { data: "data.data.data.....", other: [ 1, 2, 3, 4, 5, 6, 7 ] } });
+    > db.collection.ensureIndex({ myobject: 'hashed' });
 
 mongo will now hash the object instead of comparing based on the object. _Note_ does not support range or sort queries.
 
@@ -164,21 +153,15 @@ mongo will now hash the object instead of comparing based on the object. _Note_ 
 
 - TTL a collection: Must be used on a date field.
 
-```
-> db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
-```
+    > db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
 
 - Drop duplicate documents:
 
-```
-> db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
-```
+    > db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
 
 - Do not kill your database:
 
-```
-> db.collection.ensureIndex({ sessId: 1 }, { background: true });
-```
+    > db.collection.ensureIndex({ sessId: 1 }, { background: true });
 
 # Optimization
 
@@ -202,18 +185,12 @@ Optimize:
 - [dex](https://github.com/mongolab/dex) - The mongoDB indexing tool: `dex -f my/mongodb.log -n "mydb.mycoll" mongodb://myHost:12345/mydb`
 
 
-
-
-
-
 ## Log Optimizing
 
 > Remember that a long query might just be delayed by locking, be sure to look around for the culprit.
 
-```
-Fri Aug 17 16:21:43 [conn2472] update qa.products query: { UK.META.PRODUCT_GROUP_LABEL: { $exists: true } } update: { $unset: { UK.META.PRODUCT_GROUP_LABEL: 1.0 } } 133ms
-Fri Aug 17 16:21:43 [conn2472] update qa.products query: { UK.META.PRODUCT_GROUP: { $exists: true } } update: { $unset: { UK.META.PRODUCT_GROUP: 1.0 } } 116ms
-```
+    Fri Aug 17 16:21:43 [conn2472] update qa.products query: { UK.META.PRODUCT_GROUP_LABEL: { $exists: true } } update: { $unset: { UK.META.PRODUCT_GROUP_LABEL: 1.0 } } 133ms
+    Fri Aug 17 16:21:43 [conn2472] update qa.products query: { UK.META.PRODUCT_GROUP: { $exists: true } } update: { $unset: { UK.META.PRODUCT_GROUP: 1.0 } } 116ms
 
 1. First we check to make sure theres not index already on that field. (`getIndexes()`)
 
