@@ -11,9 +11,10 @@ theme: sky
 
 # Much ado about Indexing
 
-[Presentation Link](http://revealme.herokuapp.com/yanatan16/mongodb-indexing-presentation)
-
 _by [Jon Eisen](http://joneisen.me)_
+
+### [Presentation](http://revealme.herokuapp.com/yanatan16/mongodb-indexing-presentation)
+### [Github](https://github.com/yanatan16/mongodb-indexing-presentation)
 
 ## Overview
 
@@ -22,6 +23,8 @@ Indexes are awesome because:
 - take a linear search and make it logarithmic (i.e. search through 8 items in 3 steps instead of 8).
 - eliminate in-memory sorts.
 - reduce hard drive lookups and page faulting.
+
+> Indexes make things faster.
 
 # Preliminaries
 
@@ -39,6 +42,9 @@ Indexes are awesome because:
 - A query can only use one index (exception: $or queries)
 - Order of keys matters for range and sort queries.
 - `.explain()` not only gives information about the query, but also runs the query _optimizer_.
+- Inserts and _some_ updates cause full index updates
+
+> Always use _a priori_ knowledge of the data structure when creating your index.
 
 ## B-Trees
 
@@ -46,7 +52,7 @@ All indexes in Mongo are B-Trees. Understanding them will help you understand in
 
 > The B-tree is a generalization of a binary search tree in that a node can have more than two children.
 
-See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree).
+See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree) article.
 
 # Indexing Basics
 
@@ -67,7 +73,7 @@ See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree).
       "nscanned" : 1,
     }
 
-## Multi-key queries
+## Multi-field queries
 
     > db.subunits.find({ type: 'Polygon', rkey: 40 });
     > db.subunits.ensureIndex({ type: 1, rkey: 1 },
@@ -80,7 +86,26 @@ See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree).
     > db.subunits.find({ rkey: 40 }).hint('my_custom_name'); // indexed!
 
 - Prefix indexes are optimal secondary indexes.
-- Subset (non-prefix) are non-optimalsecondary indexes that must be hinted.
+- Subset (non-prefix) are non-optimal secondary indexes that must be hinted.
+    - _Note_: The query optimizer will never choose this, but it _does_ work.
+
+## Multi-key Index
+
+> Multikey index: Any index with a field that is an array or is contained in an array.
+
+Examples:
+
+    { keywords: [ "fibonacci", "sequence", "has", "a", "closed", "form" ] }
+    > db.coll.ensureIndex({ keywords: 1 });
+
+This index will add a entry for each field in the array!
+
+    { comments: [
+      { user: "joe", text: "that's great!" },
+      { user: "sam", text: "boo!" } ] }
+    > db.coll.ensureIndex({ 'comments.user': 1 });
+
+This index will a entry for each `comment.user` for each `comment` in `comments`!
 
 
 # Complex Indexing
@@ -148,12 +173,14 @@ _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
 ## Hash Indexing
 
-Mostly useful as a shard key. Somewhat useful when querying for object equality:
+Mostly useful as a shard key. Somewhat useful when querying for equality on a big field:
 
-    > db.collection.find({ myobject: { data: "data.data.data.....", other: [ 1, 2, 3, 4, 5, 6, 7 ] } });
-    > db.collection.ensureIndex({ myobject: 'hashed' });
+    > db.collection.find({ bigfield: "lots of binary data......." });
+    > db.collection.ensureIndex({ bigfield: 'hashed' });
 
-mongo will now hash the object instead of comparing based on the object. _Note_ does not support range or sort queries.
+mongo will now hash the binary data, object, or array instead of comparing based on the object.
+
+> Does not support range or sort queries.
 
 ## Geospatial Indexes
 
@@ -186,6 +213,8 @@ _Note: Geospatial indexes cannot be used as shard key.
 
     > db.collection.ensureIndex({ sessId: 1 }, { background: true });
 
+    - Beware of doing this on replica sets. See the [docs](http://docs.mongodb.org/manual/tutorial/build-indexes-on-replica-sets/#index-building-replica-sets).
+
 # Optimization
 
 Optimize:
@@ -194,6 +223,8 @@ Optimize:
 - `find`'s second to minimize working set churn.
 
 > When comparing indexing performance, emulate your app; don't just run the same query 100 times.
+
+    > db.collection.find({ mykey: { $gt: Math.random() } }).explain();
 
 ## Keeping Indexes in memory
 
