@@ -205,17 +205,21 @@ _Note: Geospatial indexes cannot be used as shard key.
 
 - TTL a collection: Must be used on a date field.
 
+
     > db.collection.ensureIndex({ timestamp: 1 }, { expireAfterSeconds: 500 });
 
 - Drop duplicate documents:
+
 
     > db.collection.ensureIndex({ type: 1, user: 1 }, { unique: true, dropDups: true });
 
 - Do not kill your database:
 
+
     > db.collection.ensureIndex({ sessId: 1 }, { background: true });
 
-    - Beware of doing this on replica sets. See the [docs](http://docs.mongodb.org/manual/tutorial/build-indexes-on-replica-sets/#index-building-replica-sets).
+
+  - Beware of doing this on replica sets. See the [docs](http://docs.mongodb.org/manual/tutorial/build-indexes-on-replica-sets/#index-building-replica-sets).
 
 # Optimization
 
