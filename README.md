@@ -132,6 +132,7 @@ That index is not _optimal_.
 
 > Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
 
+
     > db.subunits.ensureIndex({
         type: 1,
         'properties.name': -1,
