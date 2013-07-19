@@ -59,6 +59,7 @@ See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree) article.
 ## Equality queries
 
 
+
     > db.subunits.find({ id: 'ZMB' }).explain();
     {
       "cursor" : "BasicCursor", // no index!
@@ -74,6 +75,8 @@ See the [Wikipedia](https://en.wikipedia.org/wiki/B-tree) article.
     }
 
 ## Multi-field queries
+
+
 
     > db.subunits.find({ type: 'Polygon', rkey: 40 });
     > db.subunits.ensureIndex({ type: 1, rkey: 1 },
@@ -131,6 +134,7 @@ That index is not _optimal_.
 ## For reals this time
 
 Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
+
 
 
     > db.subunits.ensureIndex({
@@ -230,6 +234,7 @@ Optimize:
 
 > When comparing indexing performance, emulate your app; don't just run the same query 100 times.
 
+
     > db.collection.find({ mykey: { $gt: Math.random() } }).explain();
 
 ## Keeping Indexes in memory
@@ -251,8 +256,10 @@ Optimize:
 
 > Remember that a long query might just be delayed by locking, be sure to look around for the culprit.
 
+
     Fri Aug 17 16:21:43 [conn2472] update qa.products query: { UK.META.PRODUCT_GROUP_LABEL: { $exists: true } } update: { $unset: { UK.META.PRODUCT_GROUP_LABEL: 1.0 } } 133ms
     Fri Aug 17 16:21:43 [conn2472] update qa.products query: { UK.META.PRODUCT_GROUP: { $exists: true } } update: { $unset: { UK.META.PRODUCT_GROUP: 1.0 } } 116ms
+
 
 1. First we check to make sure theres not index already on that field. (`getIndexes()`)
 
