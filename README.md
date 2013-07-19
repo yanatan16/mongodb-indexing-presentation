@@ -181,6 +181,7 @@ _Beware_ of sorting with a sparse index as it can filter your returning dataset.
 
 Mostly useful as a shard key. Somewhat useful when querying for equality on a big field:
 
+
     > db.collection.find({ bigfield: "lots of binary data......." });
     > db.collection.ensureIndex({ bigfield: 'hashed' });
 
@@ -234,8 +235,9 @@ Optimize:
 
 > When comparing indexing performance, emulate your app; don't just run the same query 100 times.
 
-
-    > db.collection.find({ mykey: { $gt: Math.random() } }).explain();
+```
+> db.collection.find({ mykey: { $gt: Math.random() } }).explain();
+```
 
 ## Keeping Indexes in memory
 
