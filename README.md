@@ -130,7 +130,7 @@ That index is not _optimal_.
 
 ## For reals this time
 
-> Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
+Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range queries*.
 
 
     > db.subunits.ensureIndex({
