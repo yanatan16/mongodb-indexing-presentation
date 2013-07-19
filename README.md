@@ -162,6 +162,7 @@ Index *Equality*, then *Sorts* (in order with correct _directions_), then *Range
 - Like regular secondary indexes, but they do not include references to documents without that field.
 - Use with `{ unique: true }` to force uniqueness on only non-null values.
 
+
     > db.places.ensureIndex({ rkey: 1 }, { sparse: true });
     > db.places.find({ 'coordinates.0': { $lt: 500 } })
       .count()
